@@ -30,9 +30,15 @@ const GraphVisualization: React.FC<GraphProps> = ({ nodes, edges, onNodeClick })
           const clickedNodeId = params.nodes[0] as number;
           const clickedNode = nodes.find((node) => node.id === clickedNodeId);
           if (clickedNode) {
-            setCurrentNodeId(clickedNodeId); // Update the current node
-            setHoveredNode(null)
-            onNodeClick(clickedNode);
+            setCurrentNodeId(clickedNodeId);
+            setHoveredNode(null);
+            // Check if the clicked node is the user node
+            if (clickedNodeId !== 0) { // Assuming '0' is the user node ID
+              onNodeClick(clickedNode);
+            } else {
+              network.focus(clickedNodeId, { animation: true });
+              
+            }
           }
         }
       });
@@ -108,6 +114,8 @@ const GraphVisualization: React.FC<GraphProps> = ({ nodes, edges, onNodeClick })
         interaction: {
           hover: true,
           dragNodes: false,
+          zoomView: false,
+          dragView: false,
         },
         physics: {
           enabled: false,
