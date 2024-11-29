@@ -89,6 +89,7 @@ const GraphVisualization: React.FC<GraphProps> = ({ nodes, edges, onNodeClick })
           },
           font: {
             size: 16,
+            color: "#FFFFFF",
           },
         },
         edges: {
@@ -140,7 +141,7 @@ const GraphVisualization: React.FC<GraphProps> = ({ nodes, edges, onNodeClick })
             (connectedEdge.source === edge.source && connectedEdge.target === edge.target) ||
             (connectedEdge.source === edge.target && connectedEdge.target === edge.source)
         )
-          ? 4 // Thicker edges for connected neighbors
+          ? 10 // Thicker edges for connected neighbors
           : 2, // Default thickness for other edges
       }));
 

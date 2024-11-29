@@ -19,7 +19,7 @@ export interface Node {
 const GraphPage: React.FC = () => {
   // Define your nodes and edges here or fetch them as needed
   const [nodes] = useState<Node[]>([
-    { id: 0, name: "User", similarity: 1.0, info: "User node" },
+    { id: 0, name: "You", similarity: 1.0, info: "User node" },
     { id: 1, name: "Node A", similarity: 0.9, info: "Details about Node A" },
     { id: 2, name: "Node B", similarity: 0.7, info: "Details about Node B" },
     { id: 3, name: "Node C", similarity: 0.5, info: "Details about Node C" },
