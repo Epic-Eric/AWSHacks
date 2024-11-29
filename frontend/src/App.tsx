@@ -37,7 +37,7 @@ const App: React.FC = () => {
     { source: 3, target: 4 },
   ]);
 
-  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+  const [selectedNode, setSelectedNode] = useState<Node | null>(nodes[0]);
 
   const handleNodeClick = (node: Node) => {
     setSelectedNode(node);
