@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Network Vis Tooltip Example</title>
+  <script src="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.js"></script>
+  <link href="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.css" rel="stylesheet" />
+  <style>
+    #graph-container {
+      width: 600px;
+      height: 400px;
+      border: 1px solid black;
+      position: relative;
+    }
+
+    #tooltip {
+      position: absolute;
+      pointer-events: none;
+      padding: 5px 10px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border-radius: 4px;
+      white-space: nowrap;
+      display: none; /* Initially hidden */
+    }
+  </style>
+</head>
+<body>
+  <div id="graph-container"></div>
+  <div id="tooltip">Tooltip Content</div>
+
+  <script>
+    // Define nodes and edges
+    const nodes = new vis.DataSet([
+      { id: 1, label: 'Node 1' },
+      { id: 2, label: 'Node 2' },
+      { id: 3, label: 'Node 3' },
+    ]);
+
+    const edges = new vis.DataSet([
+      { from: 1, to: 2 },
+      { from: 1, to: 3 },
+    ]);
+
+    const data = { nodes, edges };
+    const options = {};
+
+    // Initialize network
+    const graphContainer = document.getElementById('graph-container');
+    const tooltip = document.getElementById('tooltip');
+    const networkVis = new vis.Network(graphContainer, data, options);
+
+    // Update tooltip position based on mouse movement
+    graphContainer.addEventListener('mousemove', (event) => {
+      tooltip.style.left = `${event.clientX + 10}px`;
+      tooltip.style.top = `${event.clientY + 10}px`;
+    });
+
+    // Show tooltip only when hovering over a node
+    networkVis.on('hoverNode', (params) => {
+      tooltip.style.display = 'block';
+      tooltip.innerText = `Node: ${params.node}`;
+    });
+
+    // Hide tooltip when not hovering over any node
+    networkVis.on('blurNode', () => {
+      tooltip.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
