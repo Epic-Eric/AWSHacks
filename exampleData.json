@@ -1,7 +1,18 @@
 {
   "Name": "John",
-  "Education": "Bachelors",
-  "Age": 25,
+  "GraduationYear": 2026,
+  "Age": 20,
+  "Campus": "SG",
+  "Faculty": "Applied Science and Engineering",
+  "Level of Study": "Undergraduate",
+  "userId": "john123",
+  "Phone": "123-456-7890",
+  "Instagram": "john123",
+  "Snapchat": "john123",
+  "Twitter": "john123",
+
+  "Personal Description" : "I'm a very introverted and quiet person who enjoys solitude and a peaceful environment. I value my personal space and am most comfortable when I can relax in my room with a good book, music, or simply thinking. I prefer minimal interaction with others and find social gatherings overwhelming. I like a tidy, organized home but don’t often engage with people. My hobbies include reading, writing, hiking, and spending time in nature. I’m generally a night owl and enjoy staying up late. I appreciate roommates who respect privacy and maintain a calm, quiet atmosphere.",
+
   "Preference": {
     "Requirements":
       {
