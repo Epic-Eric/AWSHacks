@@ -1,0 +1,43 @@
+/* Scoped to the personal-info-container class */
+.personal-info-container {
+    margin: 0; /* Remove any default margins */
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    /* Optional: Remove box-shadow if not needed */
+    /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+  }
+  
+.personal-info-container h2 {
+    margin-top: 0;
+  }
+  
+.personal-info-container .gender-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+.personal-info-container .gender-option {
+    display: flex;
+    align-items: center;
+  }
+  
+  .personal-info-container input[type="text"],
+  .personal-info-container input[type="number"],
+  .personal-info-container input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  /* Ensure the body does not have padding or margins that offset content */
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  

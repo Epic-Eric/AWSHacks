@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Graph from "./Graph";
 import NodeDetails from "./NodeDetails";
-import './GraphPage.css'
+import styles from './GraphPage.module.css'
 
 export interface Node {
     id: number;
@@ -42,9 +42,13 @@ const GraphPage: React.FC = () => {
   };
 
   return (
-    <div className="GraphPage">
-      <h1>Similarity Graph</h1>
-      <Graph nodes={nodes} edges={edges} onNodeClick={handleNodeClick} />
+    <div className={styles.GraphPage}>
+      <div className={styles.HeadingContainer}>
+        <h1>Find a roommate that matches with you!</h1>
+      </div>
+      <div className={styles.GraphContainer}>
+        <Graph nodes={nodes} edges={edges} onNodeClick={handleNodeClick} />
+      </div>
       {selectedNode && <NodeDetails node={selectedNode} />}
     </div>
   );

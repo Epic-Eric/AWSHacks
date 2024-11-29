@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+// import './PersonalInfo.css'; // Import the scoped CSS file
 
 type PersonalInfoProps = {
   data: {
@@ -60,7 +60,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ data, updateData }) => {
   };
 
   return (
-    <div>
+    <div className="personal-info-container">
       <h2>Personal Information</h2>
       <form>
         <label>Name:</label>
