@@ -6,37 +6,30 @@ import {
   BedrockRuntimeClient,
   InvokeModelCommand,
 } from "@aws-sdk/client-bedrock-runtime";
+import { LambdaClient, InvokeCommand } from "@aws-sdk/client-lambda";
 
 // AWS Region
 const AWS_REGION = "us-west-2";
 
-// AWS Clients Setup (No need for manual credentials)
-const comprehendClient = new ComprehendClient({
-  region: AWS_REGION,
-});
-const bedrockClient = new BedrockRuntimeClient({
-  region: AWS_REGION,
-});
+// AWS Clients Setup
+const comprehendClient = new ComprehendClient({ region: AWS_REGION });
+const bedrockClient = new BedrockRuntimeClient({ region: AWS_REGION });
+const lambdaClient = new LambdaClient({ region: AWS_REGION });
 
-// Model name for Titan
+// Model name and embedding parameters
 const MODEL_NAME = "amazon.titan-embed-text-v2:0";
 const VECTOR_DIMENSION = 1024;
 
 /**
  * Extracts key phrases from text using AWS Comprehend.
- * @param {string} text - The input text to analyze
- * @param {string} languageCode - The language code for the text (default: "en")
- * @returns {Promise<string[]>} A promise that resolves to an array of key phrases
  */
 async function extractKeyPhrases(text, languageCode = "en") {
   try {
-    console.log("Calling Comprehend API to extract key phrases..."); // Added log
     const command = new DetectKeyPhrasesCommand({
       Text: text,
       LanguageCode: languageCode,
     });
     const response = await comprehendClient.send(command);
-    console.log("Comprehend response:", response); // Added log for response
     return response.KeyPhrases?.map((phrase) => phrase.Text || "") || [];
   } catch (error) {
     console.error("Error extracting key phrases:", error);
@@ -45,13 +38,10 @@ async function extractKeyPhrases(text, languageCode = "en") {
 }
 
 /**
- * Fetches high-dimensional embeddings using Amazon Titan on Bedrock.
- * @param {string[]} sentences - An array of sentences to embed
- * @returns {Promise<number[][]>} A promise that resolves to an array of embeddings
+ * Fetches embeddings for a list of sentences using Amazon Titan.
  */
 async function getEmbeddings(sentences) {
   try {
-    console.log("Calling Bedrock API to get embeddings..."); // Added log
     const embeddings = [];
 
     for (const sentence of sentences) {
@@ -69,18 +59,13 @@ async function getEmbeddings(sentences) {
       });
 
       const response = await bedrockClient.send(command);
-
-      // Decode the Uint8Array response body to a string
       const responseBody = new TextDecoder("utf-8").decode(response.body);
-      console.log("Bedrock response body:", responseBody); // Added log for response body
-
-      // Parse the response body to get the embeddings
       const data = JSON.parse(responseBody);
 
       if (data.embedding) {
         embeddings.push(data.embedding);
       } else {
-        console.warn("No embedding vector returned for input:", sentence);
+        console.warn("No embedding returned for:", sentence);
       }
     }
 
@@ -92,90 +77,96 @@ async function getEmbeddings(sentences) {
 }
 
 /**
- * Function to obtain just the vector, without comparing the descriptions.
- * @param {string} description - Roommate description
- * @returns {number[]} The embedding vector for the description
+ * Calculates cosine similarity between two vectors.
+ */
+function cosineSimilarity(vectorA, vectorB) {
+  const dotProduct = vectorA.reduce((sum, val, i) => sum + val * vectorB[i], 0);
+  const magnitudeA = Math.sqrt(vectorA.reduce((sum, val) => sum + val ** 2, 0));
+  const magnitudeB = Math.sqrt(vectorB.reduce((sum, val) => sum + val ** 2, 0));
+  return dotProduct / (magnitudeA * magnitudeB);
+}
+
+/**
+ * Generates embeddings for a single roommate description.
  */
 async function getRoommateDescriptionEmbedding(description) {
-  console.log("Extracting key phrases...");
   const keyPhrases = await extractKeyPhrases(description);
-  console.log("Key Phrases:", keyPhrases);
-
-  console.log("Generating embedding...");
   const embedding = await getEmbeddings([keyPhrases.join(", ")]);
-
-  console.log("Generated Embedding:", embedding);
   return embedding[0];
 }
 
 /**
- * Lambda function handler for processing descriptions and generating embeddings.
- * @param {Object} event - The event input for the Lambda function
- * @param {Object} context - The context object for the Lambda function (not used in this case)
- * @returns {Object} The response with the generated embedding
+ * Compares a primary roommate description with others.
  */
-export const handler = async (event, context) => {
+async function compareRoomates(description1, ...descriptions) {
+  const embedding1 = await getRoommateDescriptionEmbedding(description1);
+  const results = [];
+
+  for (const { id, description } of descriptions) {
+    const embedding2 = await getRoommateDescriptionEmbedding(description);
+    const similarity = cosineSimilarity(embedding1, embedding2);
+    results.push({ id, similarity });
+  }
+
+  return results;
+}
+
+/**
+ * Lambda function handler.
+ */
+export const handler = async (event) => {
   try {
-    console.log("Lambda function started..."); // Added log to confirm start
+    console.log("Lambda function started...");
 
-    if (!event.userid) {
-      console.error("No user id");
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: "No user id." }),
-      };
-    }
-
-    if (!event.description) {
-      console.error("No description provided in the input."); // Added log for error
+    // Validate input
+    const { userid, description, compareDescriptions } = event;
+    if (!userid || !description || !compareDescriptions) {
       return {
         statusCode: 400,
         body: JSON.stringify({
-          error: "No description provided in the input.",
+          error: "Missing userid, description, or compareDescriptions.",
         }),
       };
     }
 
-    const description = event.description;
-    const userid = event.userid;
+    // Generate embeddings for the primary description
+    const primaryEmbedding = await getRoommateDescriptionEmbedding(description);
 
-    const embedding = await getRoommateDescriptionEmbedding(description);
+    // Compare embeddings
+    const results = await compareRoomates(
+      description,
+      ...compareDescriptions.map(({ id, description }) => ({
+        id,
+        description,
+      }))
+    );
 
-    const userId = event.userId; // Extract the userId from the incoming request
-    const embedding = event.embedding; // Extract the embedding vector
+    // Save the primary embedding via the storeEmbeddings Lambda
+    const storePayload = {
+      userId: userid,
+      embedding: primaryEmbedding,
+    };
 
-    // Create payload for the storeEmbeddings Lambda
-    const payload = JSON.stringify({
-      userId: userId,
-      embedding: embedding,
+    const storeCommand = new InvokeCommand({
+      FunctionName: "storeEmbeddings",
+      Payload: Buffer.from(JSON.stringify(storePayload)),
     });
 
-    // Set up the request to invoke the storeEmbeddings Lambda function
-    const command = new InvokeCommand({
-      FunctionName: "storeEmbeddings", // Replace with your storeEmbeddings Lambda function name
-      Payload: Buffer.from(payload),
-    });
+    const storeResponse = await lambdaClient.send(storeCommand);
+    console.log("storeEmbeddings response:", storeResponse);
 
-    // Invoke the storeEmbeddings Lambda function
-    const result = await lambdaClient.send(command);
-
-    // Optionally, log the result or handle the response from storeEmbeddings
-    console.log("storeEmbeddings Lambda response:", result);
-
-    // Return a success response
     return {
       statusCode: 200,
       body: JSON.stringify({
-        message: "Embedding generated and stored successfully!",
+        message: "Embedding generated and comparisons completed successfully!",
+        comparisons: results,
       }),
     };
   } catch (error) {
-    console.error("Error processing the description:", error);
+    console.error("Error processing request:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({
-        error: "An error occurred while processing the description.",
-      }),
+      body: JSON.stringify({ error: "An internal error occurred." }),
     };
   }
 };
