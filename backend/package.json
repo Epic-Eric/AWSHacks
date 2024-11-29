@@ -8,5 +8,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "@aws-sdk/client-bedrock": "^3.699.0",
+    "@aws-sdk/client-comprehend": "^3.699.0",
+    "dotenv": "^16.4.5"
+  }
 }
