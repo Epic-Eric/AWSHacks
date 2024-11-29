@@ -112,7 +112,6 @@ function cosineSimilarity(vec1, vec2) {
  */
 async function getRoommateDescriptionEmbedding(description) {
     console.log("Extracting key phrases...");
-    console.log(args)
     const keyPhrases = await extractKeyPhrases(description);
     console.log("Generating embedding...");
     const embedding = await getEmbeddings([keyPhrases.join(", ")]);
