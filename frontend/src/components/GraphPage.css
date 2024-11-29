@@ -1,0 +1,39 @@
+body {
+    position: relative; /* Ensure the body is positioned for the pseudo-element */
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Prevent potential scroll issues from the pseudo-element */
+    background-color: #121212; /* Dark background color */
+  }
+  
+  body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Dark overlay with 50% opacity */
+    z-index: -1; /* Ensure it stays behind other elements */
+  }
+  
+  /* Style the graph container */
+  .graph-container {
+    position: absolute; /* Change to absolute to fill the page */
+    top: 0; /* Align to the top */
+    left: 0; /* Align to the left */
+    right: 0; /* Align to the right */
+    bottom: 0; /* Align to the bottom */
+    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background for the graph */
+    border-radius: 0; /* Remove border radius to fill the page */
+    box-shadow: none; /* Remove shadow for full-page effect */
+    display: flex; /* Use flexbox to center content if needed */
+    flex-direction: column; /* Stack children vertically */
+    z-index: 1; /* Place it above the background */
+    color: #333; /* Text color for better visibility */
+  }
+  
+  /* Additional styles for the graph can be added here */

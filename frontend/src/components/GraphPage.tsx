@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Graph from "./Graph";
 import NodeDetails from "./NodeDetails";
-// import "./GraphPage.css";
+import './GraphPage.css'
 
 export interface Node {
     id: number;

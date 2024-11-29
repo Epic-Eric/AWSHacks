@@ -1,31 +1,84 @@
-/* Login Page Container */
+body {
+  position: relative; /* Ensure the body is positioned for the pseudo-element */
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Prevent potential scroll issues from the pseudo-element */
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('./visuals/uoft-image.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.1; /* Adjust this to control the faintness */
+  z-index: -1; /* Ensure it stays behind other elements */
+}
+
+/* Style the login container */
 .login-container {
+  position: relative; /* Ensure the container is above the background */
+  background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 400px;
+  padding: 40px;
+  text-align: center;
+  z-index: 1; /* Place it above the background */
+  margin-top: 100px;
+}
+
+
+/* Style the title */
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+/* Style the form */
+.login-form {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  background-color: #00204e; /* Override if needed */
-  height: 100vh;
-  color: white;
-  justify-content: center;
+  color: black;
 }
 
-/* Adjust input fields */
+/* Style the input fields */
 .login-form input {
-  background-color: transparent;
-  color: inherit;
-  border: 1px solid #ccc;
+  margin-bottom: 20px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
 }
 
-/* Adjust labels and buttons if necessary */
-.login-form label {
-  color: inherit;
-}
-
+/* Style the button */
 .login-form button {
-  background-color: #00529b;
+  background-color: #0073e6;
   color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .login-form button:hover {
-  background-color: #003f7f;
+  background-color: #005bb5;
+}
+
+/* Style the error message */
+.error-message {
+  color: red;
+  margin-bottom: 20px;
+  font-size: 14px;
 }

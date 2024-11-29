@@ -135,6 +135,13 @@ const GraphVisualization: React.FC<GraphProps> = ({ nodes, edges, onNodeClick })
       const edgesToUpdate = edges.map((edge, index) => ({
         id: `${edge.source}-${edge.target}-${index}`,
         hidden: !(connectedNodeIds.has(edge.source) && connectedNodeIds.has(edge.target)),
+        width: connectedEdges.some(
+          (connectedEdge) =>
+            (connectedEdge.source === edge.source && connectedEdge.target === edge.target) ||
+            (connectedEdge.source === edge.target && connectedEdge.target === edge.source)
+        )
+          ? 4 // Thicker edges for connected neighbors
+          : 2, // Default thickness for other edges
       }));
 
       networkRef.current.body.data.nodes.update(nodesToUpdate);

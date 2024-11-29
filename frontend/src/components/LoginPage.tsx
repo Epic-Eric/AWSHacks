@@ -12,7 +12,6 @@ const LoginPage: React.FC = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    // Hardcoded authentication logic
     if (utorid === 'xietao2' && password === '1234') {
       setIsLoggedIn(true);
       setError('');
@@ -37,7 +36,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="login-container">
-      <h1 className="title">University of Toronto Login</h1>
+      <h1 className="title">MapMatch</h1>
       <form className="login-form" onSubmit={handleSubmit}>
         {error && <p className="error-message">{error}</p>}
         <label htmlFor="utorid">UTORid</label>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+
 type PersonalInfoProps = {
   data: {
     name: string;
