@@ -1,0 +1,31 @@
+/* Login Page Container */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #00204e; /* Override if needed */
+  height: 100vh;
+  color: white;
+  justify-content: center;
+}
+
+/* Adjust input fields */
+.login-form input {
+  background-color: transparent;
+  color: inherit;
+  border: 1px solid #ccc;
+}
+
+/* Adjust labels and buttons if necessary */
+.login-form label {
+  color: inherit;
+}
+
+.login-form button {
+  background-color: #00529b;
+  color: white;
+}
+
+.login-form button:hover {
+  background-color: #003f7f;
+}

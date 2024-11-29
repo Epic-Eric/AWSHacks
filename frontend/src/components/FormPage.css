@@ -1,0 +1,153 @@
+/* Ensure body and html take full height and width */
+html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Main container */
+  .form-page-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    overflow: hidden; /* Prevent scrollbars from appearing due to layout issues */
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    width: 200px; /* Fixed width for the sidebar */
+    background-color: #00204e; /* UofT Blue */
+    color: white;
+    flex-shrink: 0; /* Prevent the sidebar from shrinking */
+    overflow-y: auto; /* Add vertical scrollbar if needed */
+  }
+  
+  /* Sidebar List */
+  .sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* Sidebar List Items */
+  .sidebar li {
+    padding: 15px;
+    cursor: pointer;
+  }
+  
+  .sidebar li.active,
+  .sidebar li:hover {
+    background-color: #00529b; /* Lighter Blue */
+  }
+  
+  /* Content Area */
+  .content {
+    flex: 1; /* Take up remaining space */
+    padding: 20px;
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+  }
+  
+  /* Form Elements */
+  form label {
+    display: block;
+    margin-top: 15px;
+  }
+  
+  form input,
+  form select,
+  form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    color: inherit; /* Use global text color */
+    background-color: transparent; /* Use global background color */
+    border: 1px solid #ccc; /* Ensure inputs are visible */
+  }
+  
+  form input::placeholder,
+  form textarea::placeholder {
+    color: rgba(255, 255, 255, 0.5); /* Placeholder text color */
+  }
+  
+  button {
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: #00204e;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #00529b;
+  }
+  
+  /* Additional Styles for Grids and Options */
+  
+  .gender-grid,
+  .social-habits {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .gender-option,
+  .habit-option {
+    width: 45%;
+    margin: 5px;
+  }
+  
+  /* Level of Study Alignment */
+  .level-of-study {
+    display: flex;
+    margin-left: 20px; /* Indent */
+  }
+  
+  .level-option {
+    margin-right: 20px;
+  }
+  
+  /* Social Input Styling */
+  .social-input {
+    display: flex;
+    align-items: center;
+  }
+  
+  .social-input .prefix {
+    background-color: #f0f0f0;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-right: none;
+    border-radius: 5px 0 0 5px;
+    color: #000; /* Ensure prefix text is visible */
+  }
+  
+  .social-input input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-left: none;
+    border-radius: 0 5px 5px 0;
+    color: inherit;
+    background-color: transparent;
+  }
+  
+  /* Ensure scrollbars appear on the far right */
+  .content::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  .content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  .content::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+  
+  .content::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+  
+  

@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import Graph from "./components/Graph";
 import NodeDetails from "./components/NodeDetails";
+import LoginPage from "./components/LoginPage";
+import FormPage from "./components/FormPage";
 import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // Types for Node and Edge
 export interface Node {
@@ -41,11 +44,17 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="App">
-      <h1>Similarity Graph</h1>
-      <Graph nodes={nodes} edges={edges} onNodeClick={handleNodeClick} />
-      {selectedNode && <NodeDetails node={selectedNode} />}
-    </div>
+    // <div className="App">
+    //   <h1>Similarity Graph</h1>
+    //   <Graph nodes={nodes} edges={edges} onNodeClick={handleNodeClick} />
+    //   {selectedNode && <NodeDetails node={selectedNode} />}
+    // </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/form" element={<FormPage />} />
+      </Routes>
+    </Router>
   );
 };
 
