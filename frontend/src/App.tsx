@@ -18,6 +18,7 @@ export interface Edge {
 
 const App: React.FC = () => {
   const [nodes] = useState<Node[]>([
+    { id: 0, name: "User", similarity: 1.0, info: "User node" },
     { id: 1, name: "Node A", similarity: 0.9, info: "Details about Node A" },
     { id: 2, name: "Node B", similarity: 0.7, info: "Details about Node B" },
     { id: 3, name: "Node C", similarity: 0.5, info: "Details about Node C" },
@@ -25,6 +26,9 @@ const App: React.FC = () => {
   ]);
 
   const [edges] = useState<Edge[]>([
+    { source: 0, target: 1 },
+    { source: 0, target: 3 },
+    { source: 0, target: 4 },
     { source: 1, target: 2 },
     { source: 2, target: 3 },
     { source: 3, target: 4 },

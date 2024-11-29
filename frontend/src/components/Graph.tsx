@@ -17,8 +17,8 @@ const GraphVisualization: React.FC<GraphProps> = ({ nodes, edges, onNodeClick })
   const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
   const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  // State to track the current node
-  const [currentNodeId, setCurrentNodeId] = useState<string | number>("Node A"); // Replace 'user' with the actual user node ID
+  // State to track the current node (using numerical ID)
+  const [currentNodeId, setCurrentNodeId] = useState<number>(0); // '0' is the user node ID
 
   useEffect(() => {
     if (containerRef.current && !networkRef.current) {
@@ -27,17 +27,18 @@ const GraphVisualization: React.FC<GraphProps> = ({ nodes, edges, onNodeClick })
 
       network.on("click", (params) => {
         if (params.nodes.length > 0) {
-          const clickedNodeId = params.nodes[0];
+          const clickedNodeId = params.nodes[0] as number;
           const clickedNode = nodes.find((node) => node.id === clickedNodeId);
           if (clickedNode) {
             setCurrentNodeId(clickedNodeId); // Update the current node
+            setHoveredNode(null)
             onNodeClick(clickedNode);
           }
         }
       });
 
       network.on("hoverNode", (params) => {
-        const hoveredNodeId = params.node;
+        const hoveredNodeId = params.node as number;
         const hoveredNode = nodes.find((node) => node.id === hoveredNodeId);
         setHoveredNode(hoveredNode || null);
         setMousePosition({ x: params.pointer.DOM.x, y: params.pointer.DOM.y });
@@ -62,7 +63,7 @@ const GraphVisualization: React.FC<GraphProps> = ({ nodes, edges, onNodeClick })
       );
 
       // Collect all connected node IDs
-      const connectedNodeIds = new Set<string | number>();
+      const connectedNodeIds = new Set<number>();
       connectedNodeIds.add(currentNodeId);
       connectedEdges.forEach((edge) => {
         connectedNodeIds.add(edge.source);
@@ -82,7 +83,7 @@ const GraphVisualization: React.FC<GraphProps> = ({ nodes, edges, onNodeClick })
         ),
         edges: new DataSet(
           connectedEdges.map((edge, index) => ({
-            id: `${edge.source}-${edge.target}-${index}`, // Ensure unique edge IDs
+            id: `${edge.source}-${edge.target}-${index}`, // Unique edge IDs
             from: edge.source,
             to: edge.target,
           }))
