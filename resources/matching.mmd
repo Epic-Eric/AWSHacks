@@ -1,0 +1,16 @@
+graph TD
+    A[Start] --> B[Collect User Preferences]
+    B --> C[Collect Room Preferences]
+    C --> D[Validate Data]
+    D --> E{Data Valid?}
+    E -- Yes --> F[Calculate Compatibility Scores]
+    E -- No --> G[Show Error: Invalid Data]
+    F --> H{Scores Sufficient?}
+    H -- Yes --> I[Generate Potential Matches]
+    H -- No --> J[Recalculate Compatibility Scores]
+    I --> K{Matches Found?}
+    K -- Yes --> L[Display Matches to User]
+    K -- No --> M[Adjust Preferences & Retry]
+    L --> N[End]
+    M --> B
+    G --> N

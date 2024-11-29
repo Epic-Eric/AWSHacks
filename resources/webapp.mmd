@@ -1,0 +1,8 @@
+graph TD
+    User[User] -->|Accesses| Amplify["Amazon Amplify (Web App Hosting)"]
+    Amplify -->|Authentication| Cognito["AWS Cognito"]
+    Cognito -->|Authenticates User| DynamoDB["AWS DynamoDB (Database)"]
+    Amplify -->|Calls| Comprehend["AWS Comprehend (NLP)"]
+    User -->|Interacts| Comprehend
+    DynamoDB -->|Stores/Retrieves| Amplify
+    Comprehend -->|Analyzes Data| DynamoDB
