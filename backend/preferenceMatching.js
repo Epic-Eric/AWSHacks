@@ -15,7 +15,7 @@ class Preferences {
     /**
      * Compares two preferences (this and another person) based on specific Requirements and Descriptions.
      * @param {Preferences} anotherPreference - The other person's preferences to compare against.
-     * @returns {boolean} - Returns false if the pair is banned, along with the reason.
+     * @returns {[boolean, string[]]} - A tuple containing a boolean value (true if the pair is accepted, false if banned) and an array of reasons for the decision.
      */
     compare(anotherPreference) {
         let reasons = [];
@@ -53,12 +53,12 @@ class Preferences {
         // If any reason was found, return false along with the reasons
         if (reasons.length > 0) {
             console.log(`Pair banned. Reasons: ${reasons.join(' ')}`);
-            return false;
+            return [false, reasons];
         }
 
         // If no issues, return true (no ban)
         console.log("Pair accepted.");
-        return true;
+        return [true, NaN];
     }
 }
 
@@ -107,10 +107,3 @@ const person2Data = {
     }
   }
 };
-
-// Create Preference instances
-const person1 = new Preferences(person1Data);
-const person2 = new Preferences(person2Data);
-
-// Compare person1 and person2
-person1.compare(person2);
