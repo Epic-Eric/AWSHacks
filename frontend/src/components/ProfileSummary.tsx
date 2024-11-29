@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 type ProfileSummaryProps = {
   formData: any;
@@ -6,7 +7,15 @@ type ProfileSummaryProps = {
 };
 
 const ProfileSummary: React.FC<ProfileSummaryProps> = ({ formData, handleSubmit }) => {
+  const navigate = useNavigate();
+
   const { personalInfo, education, interests, contact } = formData;
+
+  // Handle the submit action and navigate to the graph
+  const handleProfileSubmit = () => {
+    handleSubmit(); // Call the existing submit handler
+    navigate('/graph'); // Navigate to the graph page
+  };
 
   return (
     <div>
@@ -44,7 +53,7 @@ const ProfileSummary: React.FC<ProfileSummaryProps> = ({ formData, handleSubmit 
         <p>Snapchat: https://snapchat.com/add/{contact.snapchat}</p>
         <p>Twitter: @{contact.twitter}</p>
       </div>
-      <button onClick={handleSubmit}>Submit</button>
+      <button onClick={handleProfileSubmit}>Submit and View Graph</button>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Network } from "vis-network";
 import { DataSet } from "vis-data";
-import { Node, Edge } from "../App";
+import { Node, Edge } from "./GraphPage";
 import NodeDetails from "./NodeDetails";
 import Tooltip from "./Tooltip";
 
@@ -16,8 +16,6 @@ const GraphVisualization: React.FC<GraphProps> = ({ nodes, edges, onNodeClick })
   const networkRef = useRef<Network | null>(null);
   const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
   const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
-
-  // State to track the current node (using numerical ID)
   const [currentNodeId, setCurrentNodeId] = useState<number>(0); // '0' is the user node ID
 
   useEffect(() => {
@@ -30,9 +28,21 @@ const GraphVisualization: React.FC<GraphProps> = ({ nodes, edges, onNodeClick })
           const clickedNodeId = params.nodes[0] as number;
           const clickedNode = nodes.find((node) => node.id === clickedNodeId);
           if (clickedNode) {
-            setCurrentNodeId(clickedNodeId); // Update the current node
-            setHoveredNode(null)
+            setCurrentNodeId(clickedNodeId);
+            setHoveredNode(null);
             onNodeClick(clickedNode);
+
+            // Smoothly focus on the clicked node
+            network.focus(clickedNodeId, {
+              scale: 1.0,
+              animation: {
+                duration: 500,
+                easingFunction: "easeInOutQuad",
+              },
+            });
+
+            // Update the visibility of nodes and edges
+            updateGraphVisibility(clickedNodeId);
           }
         }
       });
@@ -48,46 +58,26 @@ const GraphVisualization: React.FC<GraphProps> = ({ nodes, edges, onNodeClick })
         setHoveredNode(null);
       });
 
-      return () => {
-        network.destroy();
-        networkRef.current = null;
-      };
+      // Initial graph setup
+      initializeGraph();
     }
-  }, [nodes, onNodeClick]);
+  }, [nodes, edges, onNodeClick]);
 
-  useEffect(() => {
+  const initializeGraph = () => {
     if (networkRef.current) {
-      // Filter edges connected to the current node
-      const connectedEdges = edges.filter(
-        (edge) => edge.source === currentNodeId || edge.target === currentNodeId
-      );
-
-      // Collect all connected node IDs
-      const connectedNodeIds = new Set<number>();
-      connectedNodeIds.add(currentNodeId);
-      connectedEdges.forEach((edge) => {
-        connectedNodeIds.add(edge.source);
-        connectedNodeIds.add(edge.target);
-      });
-
-      // Filter nodes that are connected
-      const displayedNodes = nodes.filter((node) => connectedNodeIds.has(node.id));
-
       const graphData = {
-        nodes: new DataSet(
-          displayedNodes.map((node) => ({
-            id: node.id,
-            label: node.name,
-            value: node.similarity * 10,
-          }))
-        ),
-        edges: new DataSet(
-          connectedEdges.map((edge, index) => ({
-            id: `${edge.source}-${edge.target}-${index}`, // Unique edge IDs
-            from: edge.source,
-            to: edge.target,
-          }))
-        ),
+        nodes: new DataSet(nodes.map((node) => ({
+          id: node.id,
+          label: node.name,
+          value: node.similarity * 10,
+          hidden: true, // Initially hide all nodes
+        }))),
+        edges: new DataSet(edges.map((edge, index) => ({
+          id: `${edge.source}-${edge.target}-${index}`,
+          from: edge.source,
+          to: edge.target,
+          hidden: true, // Initially hide all edges
+        }))),
       };
 
       const options = {
@@ -108,19 +98,49 @@ const GraphVisualization: React.FC<GraphProps> = ({ nodes, edges, onNodeClick })
         interaction: {
           hover: true,
           dragNodes: false,
+          zoomView: false,
+          dragView: false,
         },
         physics: {
-          enabled: false,
+          enabled: true,
         },
       };
 
       networkRef.current.setData(graphData);
       networkRef.current.setOptions(options);
 
-      // Center the graph on the current node
-      networkRef.current.focus(currentNodeId, { animation: true });
+      // Reveal the initial node and its neighbors
+      updateGraphVisibility(currentNodeId);
     }
-  }, [nodes, edges, currentNodeId]);
+  };
+
+  const updateGraphVisibility = (nodeId: number) => {
+    if (networkRef.current) {
+      const connectedEdges = edges.filter(
+        (edge) => edge.source === nodeId || edge.target === nodeId
+      );
+
+      const connectedNodeIds = new Set<number>();
+      connectedNodeIds.add(nodeId);
+      connectedEdges.forEach((edge) => {
+        connectedNodeIds.add(edge.source);
+        connectedNodeIds.add(edge.target);
+      });
+
+      const nodesToUpdate = nodes.map((node) => ({
+        id: node.id,
+        hidden: !connectedNodeIds.has(node.id),
+      }));
+
+      const edgesToUpdate = edges.map((edge, index) => ({
+        id: `${edge.source}-${edge.target}-${index}`,
+        hidden: !(connectedNodeIds.has(edge.source) && connectedNodeIds.has(edge.target)),
+      }));
+
+      networkRef.current.body.data.nodes.update(nodesToUpdate);
+      networkRef.current.body.data.edges.update(edgesToUpdate);
+    }
+  };
 
   return (
     <div style={{ position: "relative", height: "500px" }}>
