@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Network } from "vis-network";
 import { DataSet } from "vis-data";
-import { Node, Edge } from "../App";
+import { Node, Edge } from "./GraphPage";
 import NodeDetails from "./NodeDetails";
 import Tooltip from "./Tooltip";
 

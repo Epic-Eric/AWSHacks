@@ -1,5 +1,5 @@
 import React from "react";
-import { Node } from "../App";
+import { Node } from "./GraphPage";
 import './NodeDetails.css'
 
 interface NodeDetailsProps {
