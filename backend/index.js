@@ -130,7 +130,13 @@ async function compareRoommateDescriptions(description1, description2) {
 
     // Get embeddings for each description
     for (const description of [description1, description2]) {
-        console.log(`Processing description: ${description}`);
+        // log description
+        const sentences = description.split('.'); // Split by period to get sentences
+        const firstSentence = sentences[0] ? sentences[0].split(' ').slice(0, 7).join(' ') + '.' : ''; // First sentence limited to 7 words
+        const lastSentence = sentences[sentences.length - 1] ? sentences[sentences.length - 1] + '.' : ''; // Last sentence
+
+        console.log(`Processing description: ${firstSentence} ... ${lastSentence}`);
+
         const embedding = await getRoommateDescriptionEmbedding(description);
         embeddings.push(embedding);
     }
