@@ -4,8 +4,11 @@ const axios = require("axios");
 const API_URL =
   "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2";
 
-// Your Hugging Face API Token
-const API_TOKEN = "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"; // Make sure it's correct
+// Load environment variables from a .env file
+require("dotenv").config();
+
+// Your Hugging Face API Token from environment variables
+const API_TOKEN = process.env.HUGGING_FACE_API_TOKEN;
 
 // Function to fetch sentence embeddings using sentence transformers
 async function getSentenceEmbedding(sourceSentence, sentences) {
