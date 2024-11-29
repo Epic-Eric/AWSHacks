@@ -1,0 +1,25 @@
+{
+  "Name": "John",
+  "Education": "Bachelors",
+  "Age": 25,
+  "Preference": {
+    "Requirements":
+      {
+        "Drinking": "True",
+        "Smoking": "False",
+        "Not_Clean": "False",
+        "Pets": "False",
+        "Gender": "Male"
+      }
+    ,
+    "Description":
+      {
+        "Drinking": "False",
+        "Smoking": "False",
+        "Not_Clean": "False",
+        "Pets": "False",
+        "Gender": "Male"
+      }
+
+  }
+}
